@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capminds Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="images/Capminds logo 4.png" type="image/x-icon">
+  </head>
+  <body>
+    <!-- header -->
+    <header class="top-header">
+      <div class="logo">
+        <img src="images/Capminds logo 4.png" alt="Logo" />
+      </div>
+      <button class="btn-appointment">+ Book Appointment</button>
+      <div class="header-spacer"></div>
+    </header>
+    <!-- Main container includes aside -->
+    <div class="main-layout">
+      <!-- Aside -->
+      <aside class="sidebar" id="sidebar">
+        <div class="nav-item toggle-btn" id="menuToggle">
+          <img
+            src="images/icons/material-symbols_navigate-next.png"
+            alt="<<"
+            class="nav-icon toggle-icon"
+          />
+        </div>
+
+        <nav class="sidebar-nav">
+          <!-- calander button -->
+          <div class="nav-item active" data-target="calendar-view">
+            <img
+              src="images/icons/material-symbols_calendar-today-outline.svg"
+              alt="calender"
+              class="nav-icon"
+            />
+            <span class="nav-text">Calendar</span>
+          </div>
+
+          <!-- dashboard button -->
+          <div class="nav-item" data-target="dashboard-view">
+            <img src="images/icons/Vector.svg" alt="" class="nav-icon" />
+            <span class="nav-text">Dashboard</span>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main container -->
+      <main class="content-container">
+
+        <!-- Calender Pagez -->
+        <div id="calendar-view" class="page-view">
+          <!-- Calander Heading -->
+          <div class="calendar-header-section">
+            <!-- Row 1 Controls -->
+            <div class="row-controls">
+              <div class="nav-group">
+                <button class="ctrl-btn">&lt;</button>
+                <span class="date-text">January 18, 2023</span>
+                <button class="ctrl-btn">&gt;</button>
+              </div>
+
+              <div class="action-group">
+                <button class="btn-today">Today</button>
+                <select id="monthSelect" class="view-select">
+                  <option>Month</option>
+                </select>
+              </div>
+            </div>
+            <!-- Row 2 Provider -->
+            <div class="row-provider">
+              <h2 class="provider-name">James Marry</h2>
+            </div>
+          </div>
+          <!-- calander grid -->
+          <div class="calendar-container">
+            <div class="calendar-weekdays">
+              <div class="grid-header">SUNDAY</div>
+              <div class="grid-header">MONDAY</div>
+              <div class="grid-header">TUESDAY</div>
+              <div class="grid-header">WEDNESDAY</div>
+              <div class="grid-header">THURSDAY</div>
+              <div class="grid-header">FRIDAY</div>
+              <div class="grid-header">SATURDAY</div>
+            </div>
+
+            <div id="calendar-days-grid" class="calendar-days-grid"></div>
+          </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard-view" class="page-view" style="display: none">
+          <div class="dashboard-wrapper">
+            <div class="filter-bar">
+              <!-- patientSearch -->
+              <div class="search-box">
+                <img src="images/icons/search 1.svg" class="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Patient Search"
+                  id="patientSearch"
+                />
+              </div>
+
+              <!-- doctorSearch -->
+              <div class="search-box">
+                <img src="images/icons/search 1.svg" class="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Doctor Search"
+                  id="doctorSearch"
+                />
+              </div>
+
+              <!-- date range -->
+              <div class="date-range-container">
+                <div class="date-input-group">
+                  <img src="images/icons/calendar.svg" class="field-icon" />
+                  <input
+                    type="text"
+                    id="startDate"
+                    placeholder="DD/MM/YYYY"
+                    class="dash-date"
+                  />
+                </div>
+                <span>—</span>
+                <div class="date-input-group">
+                  <img src="images/icons/calendar.svg" class="field-icon" />
+                  <input
+                    type="text"
+                    id="endDate"
+                    placeholder="DD/MM/YYYY"
+                    class="dash-date"
+                  />
+                </div>
+              </div>
+              <button class="update-btn">Update</button>
+            </div>
+
+            <div class="table-card">
+              <div class="table-header-title">Appointment Details</div>
+              <table class="practice-table">
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Hospital</th>
+                    <th>Specialty</th>
+                    <th>Appointment Date</th>
+                    <th>Appointment Time</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Popup Models -->
+    <!-- Popup when the book appointment is clicked -->
+
+    <div id="appointmentSuccessToast" class="toast-message" style="display: none"></div>
+
+    <div id="appointmentModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Schedule Appointment</h3>
+          <div id="closeModal" class="close-icon-btn">
+            <img
+              src="images/icons/iconoir_cancel.svg"
+              alt="&times;"
+              class="modal-close-img"
+            />
+          </div>
+        </div>
+
+        <!-- using form -->
+        <form id="appointmentForm" class="modal-body">
+          <!-- Patient Name and Doctor Name row-->
+          <div class="form-row">
+            <div class="input-wrapper">
+              <img src="images/icons/users.svg" class="field-icon" />
+              <input
+                type="text"
+                id="patientNameInput"
+                class="modal-input"
+                placeholder="Enter Patient Name"
+                required
+              />
+            </div>
+            <div class="input-wrapper">
+              <img src="images/icons/users.svg" class="field-icon" />
+              <select class="modal-input">
+                <option>Doctor Name</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Hospital Name and Specialty row-->
+          <div class="form-row">
+            <div class="input-wrapper">
+              <img src="images/icons/Location pin.svg" class="field-icon" />
+              <select class="modal-input">
+                <option>Hospital Name</option>
+              </select>
+            </div>
+            <div class="input-wrapper">
+              <img src="images/icons/fontisto_doctor.svg" class="field-icon" />
+              <select class="modal-input">
+                <option>Specialty</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Select Date and Select Time row-->
+          <div class="form-row">
+            <!-- Select Date -->
+            <div class="input-wrapper" role="button" tabindex="0">
+              <img src="images/icons/Frame.svg" class="field-icon" />
+              <input
+                type="date"
+                id="appointmentDate"
+                placeholder="Select Date"
+                class="modal-input"
+                onclick="this.showPicker()"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.showPicker();}"
+              />
+            </div>
+
+            <!-- Select Time -->
+            <div class="input-wrapper" role="group" aria-label="Select time">
+              <img src="images/icons/Access time.svg" class="field-icon" />
+              <select id="appointmentTimeHour" class="modal-input" style="max-width: 60px; margin-right: 6px;">
+                <option value="">Hr</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+              <span style="margin-right: 6px; color: #6b7280;">:</span>
+              <select id="appointmentTimeMinute" class="modal-input" style="max-width: 70px; margin-right: 6px;">
+                <option value="">Min</option>
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </select>
+              <select id="appointmentTimeMeridiem" class="modal-input" style="max-width: 70px;">
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="reason-container">
+            <label>Reason</label>
+            <textarea rows="2" class="reason-box"></textarea>
+          </div>
+
+          <!-- save and cancel button -->
+          <div class="modal-actions">
+            <button type="button" id="cancelBtn" class="btn-outline">
+              Cancel
+            </button>
+            <button type="submit" class="btn-fill">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Popup for Delete -->
+    <div id="deleteConfirmModal" class="modal-overlay" style="display: none">
+      <div class="delete-modal-box">
+        <div class="delete-icon-circle">!</div>
+        <h3>Are you sure?</h3>
+        <p>
+          Do you really want to delete this appointment? This process cannot be
+          undone.
+        </p>
+        <div class="delete-modal-btns">
+          <button class="btn-cancel" onclick="closeDeleteModal()">
+            Cancel
+          </button>
+          <button class="btn-confirm-delete" id="finalDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+    <!--  -->
+
+    <!-- Popup for Edit Option -->
+    <div id="editModal" class="modal-overlay" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Edit Appointment</h2>
+          <div class="close-icon-btn" onclick="closeEditModal()">
+            <img
+              src="images/icons/iconoir_cancel.svg"
+              alt="&times;"
+              class="modal-close-img"
+            />
+          </div>
+        </div>
+
+        <form id="editForm" class="modal-body">
+          <div class="input-group">
+            <label>Patient Name</label>
+            <div class="input-wrapper">
+              <img src="images/icons/users.svg" class="field-icon" />
+              <input
+                type="text"
+                id="editPatientName"
+                class="modal-input"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Hospital</label>
+            <div class="input-wrapper">
+              <img src="images/icons/Location pin.svg" class="field-icon" />
+              <select id="editHospital" class="modal-input"></select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Date</label>
+            <div class="input-wrapper">
+              <img src="images/icons/calendar.svg" class="field-icon" />
+              <input
+                type="date"
+                id="editAppDate"
+                class="modal-input"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Time</label>
+            <div class="input-wrapper">
+              <img src="images/icons/Access time.svg" class="field-icon" />
+              <input
+                type="time"
+                id="editAppTime"
+                class="modal-input"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn-outline"
+              onclick="closeEditModal()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn-fill">Update Appointment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- View Modal -->
+    <div id="viewModal" class="modal-overlay" style="display: none">
+      <div class="modal-content view-details-content">
+        <div class="modal-header">
+          <h2>Appointment Details</h2>
+          <div class="close-icon-btn" onclick="closeViewModal()">
+            <img
+              src="images/icons/iconoir_cancel.svg"
+              alt="&times;"
+              class="modal-close-img"
+            />
+          </div>
+        </div>
+
+        <div class="modal-body view-body">
+          <div class="detail-row">
+            <label>Patient Name:</label>
+            <span id="viewPatient"></span>
+          </div>
+          <div class="detail-row">
+            <label>Doctor Name:</label>
+            <span id="viewDoctor"></span>
+          </div>
+          <div class="detail-row">
+            <label>Hospital:</label>
+            <span id="viewHospital"></span>
+          </div>
+          <div class="detail-row">
+            <label>Specialty:</label>
+            <span id="viewSpecialty"></span>
+          </div>
+          <div class="detail-row">
+            <label>Date & Time:</label>
+            <span id="viewDateTime"></span>
+          </div>
+          <div class="detail-row reason-section">
+            <label>Reason for Visit:</label>
+            <p id="viewReason"></p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-outline" onclick="closeViewModal()">Close</button>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
